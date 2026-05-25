@@ -17,6 +17,8 @@ const voting = require('./voting');
 const { touchUser, getUserById } = require('./db');
 
 const app = express();
+// Railway/Render/etc rulează un proxy în față; permitem cookie secure pe HTTPS
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const io = new Server(server);
 app.set('io', io);
