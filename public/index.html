@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5v5 pe Smecherie - Login</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <h1 class="brand">
+      <span class="crown">&#x1F451;</span>
+      5v5 pe <span class="accent">Smecherie</span>
+    </h1>
+    <p class="tagline">Campionat LoL pe smecherie</p>
+
+    <form id="login-form">
+      <label>
+        Username
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="numele tau"
+          autocomplete="off"
+          required
+          minlength="2"
+          maxlength="24"
+        />
+      </label>
+
+      <label>
+        Link op.gg
+        <input
+          type="url"
+          name="opggUrl"
+          id="opggUrl"
+          placeholder="https://op.gg/lol/summoners/euw/NumeJucator-1234"
+          required
+        />
+      </label>
+
+      <button type="submit" class="btn btn-primary">Intra in lobby</button>
+      <div id="login-error" class="error-msg" hidden></div>
+    </form>
+
+    <p class="hint">
+      Login simplu, fara parola. Linkul de op.gg e obligatoriu - sa vada toata lumea statisticile.
+    </p>
+  </div>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5v5 pe Smecherie - Lobby</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="lobby-body">
+  <header class="topbar">
+    <h1 class="brand small">
+      <span class="crown">&#x1F451;</span>
+      5v5 pe <span class="accent">Smecherie</span>
+    </h1>
+    <div class="me">
+      <span id="me-username">...</span>
+      <span id="me-badge" class="badge badge-admin" hidden>ADMIN</span>
+      <button id="logout-btn" class="btn btn-ghost">Iesi</button>
+    </div>
+  </header>
+
+  <main class="lobby-grid">
+    <!-- Left: lista jucatori -->
+    <section class="panel players-panel">
+      <h2>Jucatori in lobby <span id="player-count" class="count">0</span></h2>
+      <div id="voting-info" class="voting-info">
+        <div class="voting-progress">
+          Voturi: <span id="vote-progress">0/0</span>
+          <span class="hint-inline">(top 2 = capitani)</span>
+        </div>
+      </div>
+      <ul id="players-list" class="players-list"></ul>
+
+      <div id="admin-panel" class="admin-panel" hidden>
+        <h3>Admin panel</h3>
+        <button id="force-start-btn" class="btn btn-primary" disabled>
+          Forteaza start cu top 2 voturi
+        </button>
+        <button id="reset-btn" class="btn btn-danger">Reset lobby</button>
+      </div>
+    </section>
+
+    <!-- Center: draft / teams reveal -->
+    <section class="panel draft-panel">
+      <div id="draft-idle" class="phase-block">
+        <h2>Astept capitanii</h2>
+        <p>Adminul alege capitanii. Apoi incepe draftul (snake 1-2-2-2-2-1).</p>
+      </div>
+
+      <div id="draft-active" class="phase-block" hidden>
+        <h2>Draft in desfasurare</h2>
+        <div class="draft-status">
+          <div class="turn-indicator">
+            Tura: <span id="turn-cap" class="turn-cap">-</span>
+          </div>
+          <div class="pick-counter">
+            Pick <span id="pick-num">1</span> / 8
+          </div>
+        </div>
+        <div class="teams-preview">
+          <div class="team-box team-1">
+            <h3>Team Smecherie 1</h3>
+            <div class="captain-row" id="team1-captain"></div>
+            <ul id="team1-members"></ul>
+          </div>
+          <div class="team-box team-2">
+            <h3>Team Smecherie 2</h3>
+            <div class="captain-row" id="team2-captain"></div>
+            <ul id="team2-members"></ul>
+          </div>
+        </div>
+        <div id="pick-prompt" class="pick-prompt" hidden>
+          <strong>E randul tau!</strong> Click pe un jucator din lista de jos.
+        </div>
+        <div id="pickable-list" class="pickable-list"></div>
+      </div>
+
+      <div id="draft-done" class="phase-block" hidden>
+        <h2>Echipe gata - Hai la jocuri!</h2>
+        <div class="teams-final">
+          <div class="team-box team-1 big">
+            <h3>Team Smecherie 1</h3>
+            <ul id="final-team1"></ul>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-box team-2 big">
+            <h3>Team Smecherie 2</h3>
+            <ul id="final-team2"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: chat -->
+    <section class="panel chat-panel">
+      <h2>Chat</h2>
+      <div id="chat-messages" class="chat-messages"></div>
+      <form id="chat-form" class="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Scrie un mesaj..."
+          maxlength="500"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary">Trimite</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- Player detail modal -->
+  <div id="player-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close>&times;</button>
+      <div class="modal-header">
+        <h2 id="pm-username">-</h2>
+        <span id="pm-admin-badge" class="badge badge-admin" hidden>ADMIN</span>
+        <span id="pm-online-badge" class="badge badge-online">OFFLINE</span>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row">
+          <span class="modal-label">Rank</span>
+          <span id="pm-rank" class="modal-value rank-value">-</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">Win / Loss</span>
+          <span id="pm-wl" class="modal-value">-</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">op.gg</span>
+          <a id="pm-opgg" class="modal-value" target="_blank" rel="noopener">-</a>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">In lobby de la</span>
+          <span id="pm-since" class="modal-value">-</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">Cont creat</span>
+          <span id="pm-created" class="modal-value">-</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">Voturi captain</span>
+          <span id="pm-votes" class="modal-value">0</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">Echipa curenta</span>
+          <span id="pm-team" class="modal-value">-</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-label">Ultimul mesaj</span>
+          <span id="pm-lastmsg" class="modal-value">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/lobby.js"></script>
+</body>
+</html>
